@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react'
+import AppButton from './components/AppButton'
+import Input from './components/Input';
 
 
 type GalleryImage = {
@@ -40,6 +42,7 @@ export default function AddImageGallery() {
                 localStorage.setItem('imageGallery', JSON.stringify(updatedGallery));
                 return updatedGallery;
             });
+
             setNextId(prev => prev + 1);
             setImageTitle("");
             setImageURL("");
@@ -70,13 +73,15 @@ export default function AddImageGallery() {
         <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-slate-100 to-slate-300">
             <div className="flex flex-col items-center w-10/12 h-[860px]  border border-gray-300 rounded-2xl shadow-lg bg-white gap-7 p-3">
                 <h2 className="text-2xl font-bold  text-slate-700">Add Image to Gallery</h2>
-                <input
-                    type="text"
-                    placeholder="Search image title or URL..."
-                    className="w-10/12 h-12 border border-slate-300 rounded-lg px-4 py-3 text-lg focus:ring-2 focus:ring-slate-400 focus:outline-none transition-all duration-200 shadow-sm bg-slate-50 mb-4"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
+                <div className='w-full'>
+                    <Input
+                        variant="search"
+                        placeholder="Search image title or URL..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+
+                </div>
 
                 <div className='border h-3/4 w-10/12 overflow-y-auto p-4 rounded-lg bg-slate-50 shadow-inner gap-4'>
                     {gallery.length === 0 && searchTerm.trim() === '' ? (
@@ -92,7 +97,7 @@ export default function AddImageGallery() {
                             <div className="text-sm text-slate-400">Click the + button to add your first image.</div>
 
                         </div>
-                        
+
                     ) : filteredGallery.length === 0 ? (
                         <div className="flex items-center justify-center h-full text-slate-500">
                             <div className="text-lg">No results found</div>
@@ -102,13 +107,14 @@ export default function AddImageGallery() {
                             {filteredGallery.map((image) => (
                                 <li key={image.id} className="mb-4">
                                     <div className="relative bg-gradient-to-br from-slate-50 to-slate-200 border justify-center border-slate-200 rounded-2xl p-3 shadow-lg flex flex-col items-center gap-5 h-96 w-96  group transition-all duration-300 hover:shadow-2xl">
-                                        <button
-                                            className="absolute top-2 right-2 w-8 h-8 flex items-center justify-center rounded-full bg-white/80 text-slate-400 hover:text-red-500 hover:bg-red-100 transition-colors duration-200 shadow focus:outline-none focus:ring-2 focus:ring-red-300/40 text-xl font-bold z-10"
+                                        <AppButton
+                                            variant="icon"
+                                            pos="card"
                                             title="Remove image"
                                             onClick={() => handleRemoveImage(image.id)}
                                         >
                                             ×
-                                        </button>
+                                        </AppButton>
                                         <img
                                             src={image.url}
                                             alt={image.title}
@@ -128,48 +134,49 @@ export default function AddImageGallery() {
                 </div>
 
                 <div className='h-10 justify-end  items-end flex w-11/12 '>
-                    <button
-                        className="w-16 h-16 rounded-full  flex items-center justify-center bg-slate-600 hover:bg-slate-700 text-white text-3xl font-bold shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-slate-400"
+                    <AppButton
+                        variant="fab"
                         title="Add image"
                         onClick={() => setSelect(true)}
                     >
                         +
-                    </button>
+                    </AppButton>
                 </div>
             </div>
 
             {select && (
                 <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
                     <div className="bg-gradient-to-br from-white to-slate-100 p-8 rounded-3xl shadow-2xl w-full max-w-md relative animate-fade-in">
-                        <button
+
+                        <AppButton
+                            variant="icon"
+                            pos="modal"
                             onClick={() => setSelect(false)}
-                            className="absolute top-4 right-4 text-slate-400 hover:text-red-500 text-2xl font-bold transition-colors duration-200 focus:outline-none"
                             title="Close"
                         >
                             x
-                        </button>
+                        </AppButton>
+
                         <h3 className="text-2xl font-extrabold mb-6 text-slate-700 text-center tracking-wide">Image Details</h3>
                         <div className="flex flex-col gap-6">
-                            <input
-                                type="text"
-                                placeholder="Image Title"
-                                className="border border-slate-300 rounded-lg px-4 py-3 text-lg focus:ring-2 focus:ring-slate-400 focus:outline-none transition-all duration-200 shadow-sm bg-slate-50"
-                                value={imageTitle}
+                            <Input
+                                variant='search'
+                                label="Image Title"
                                 onChange={(e) => setImageTitle(e.target.value)}
+                                value={imageTitle}
                             />
-                            <input
-                                type="text"
-                                placeholder="Image URL"
-                                className="border border-slate-300 rounded-lg px-4 py-3 text-lg focus:ring-2 focus:ring-slate-400 focus:outline-none transition-all duration-200 shadow-sm bg-slate-50"
-                                value={imageURL}
+                            <Input
+                                variant='search'
+                                label="Image URL"
                                 onChange={(e) => setImageURL(e.target.value)}
+                                value={imageURL}
                             />
-                            <button
-                                className="mt-2 bg-slate-700 hover:bg-slate-900 text-white font-semibold py-3 rounded-lg shadow-md transition-all duration-200 text-lg"
+                            <AppButton
+                                variant="primary"
                                 onClick={handleSaveImage}
                             >
                                 Save Image
-                            </button>
+                            </AppButton>
                         </div>
                     </div>
                 </div>
@@ -179,13 +186,14 @@ export default function AddImageGallery() {
             {ViewImage && (
                 <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
                     <div className="bg-white p-6 rounded-3xl shadow-2xl max-w-3xl w-full relative animate-fade-in">
-                        <button
-                            className="absolute top-4 right-2 text-slate-400 hover:text-red-500 text-2xl font-bold transition-colors duration-200 focus:outline-none"
+                        <AppButton
+                            variant="icon"
+                            pos="view"
                             title="Close"
                             onClick={() => setViewImage(false)}
                         >
                             x
-                        </button>
+                        </AppButton>
                         <img
                             src={viewImageUrl}
                             alt="View"
